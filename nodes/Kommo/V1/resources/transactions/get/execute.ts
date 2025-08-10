@@ -21,6 +21,11 @@ export async function execute(
   const requestMethod = 'GET';
   const base = 'customers/transactions';
 
+  // Apply filter BEFORE branching so it works for both returnAll and paged
+  if (customerId) {
+    (qs as any).filter = { customer_id: customerId } as any;
+  }
+
   if (returnAll) {
     const pages = await apiRequestAllItems.call(this, requestMethod, base, body, qs);
     if (simplify) {
@@ -30,10 +35,6 @@ export async function execute(
     return this.helpers.returnJsonArray(pages);
   }
 
-  if (customerId) {
-    // Use filter via qs when provided
-    (qs as any).filter = { customer_id: customerId } as any;
-  }
   const responseData = await apiRequest.call(this, requestMethod, base, body, qs);
   if (simplify) {
     const txs = (responseData as any)?._embedded?.transactions ?? [];
