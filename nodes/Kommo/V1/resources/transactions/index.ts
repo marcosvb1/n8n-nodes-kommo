@@ -18,18 +18,8 @@ export const descriptions: INodeProperties[] = [
     },
     options: [
       { name: 'Get Transactions', value: 'getTransactions', action: 'Get list of transactions' },
-      {
-        name: 'Create Transactions',
-        value: 'createTransactions',
-        description: 'Create new transactions',
-        action: 'Create new transactions',
-      },
-      {
-        name: 'Update Transactions',
-        value: 'updateTransactions',
-        description: 'Update transactions',
-        action: 'Update transactions',
-      },
+      { name: 'Create Transactions', value: 'createTransactions', action: 'Create new transactions' },
+      { name: 'Update Transactions', value: 'updateTransactions', action: 'Update transactions' },
     ],
     default: 'getTransactions',
   },
