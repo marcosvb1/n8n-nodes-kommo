@@ -85,42 +85,15 @@ export class KommoV1 implements INodeType {
 					type: 'options',
 					noDataExpression: true,
 					options: [
-						{
-							name: 'Account',
-							value: 'account',
-						},
-						{
-							name: 'Company',
-							value: 'companies',
-						},
-						{
-							name: 'Contact',
-							value: 'contacts',
-						},
-						{
-							name: 'Lead',
-							value: 'leads',
-						},
-						{
-							name: 'List',
-							value: 'lists',
-						},
-                        {
-							name: 'Note',
-							value: 'notes',
-						},
-						{
-							name: 'Task',
-							value: 'tasks',
-						},
-                        {
-                            name: 'Customer',
-                            value: 'customers',
-                        },
-                        {
-                            name: 'Transaction',
-                            value: 'transactions',
-                        },
+                        { name: 'Account', value: 'account' },
+                        { name: 'Company', value: 'companies' },
+                        { name: 'Contact', value: 'contacts' },
+                        { name: 'Customer', value: 'customers' },
+                        { name: 'Lead', value: 'leads' },
+                        { name: 'List', value: 'lists' },
+                        { name: 'Note', value: 'notes' },
+                        { name: 'Task', value: 'tasks' },
+                        { name: 'Transaction', value: 'transactions' },
 					],
 					default: 'account',
 				},

@@ -21,7 +21,7 @@ const createCustomerModel: INodeProperties[] = [
     displayName: 'Responsible User Name or ID',
     name: 'responsible_user_id',
     type: 'options',
-    default: 0,
+    default: '',
     typeOptions: { loadOptionsMethod: 'getActiveUsersWithRobot' },
     description:
       'Select user. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
