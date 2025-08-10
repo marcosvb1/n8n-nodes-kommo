@@ -157,6 +157,14 @@ export const description: ILeadsProperties = [
 			]),
 		],
 	},
+  {
+    displayName: 'Simplify Output',
+    name: 'simplify',
+    type: 'boolean',
+    default: true,
+    description: 'Whether to return only the leads array instead of the full response',
+    displayOptions,
+  },
 	addPageDescription({
 		show: {
 			...displayOptions.show,

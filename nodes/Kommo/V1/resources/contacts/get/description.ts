@@ -118,7 +118,7 @@ export const description: IContactsProperties = [
     name: 'simplify',
     type: 'boolean',
     default: true,
-    description: 'Return only the contacts array instead of the full response',
+    description: 'Whether to return only the contacts array instead of the full response',
     displayOptions,
   },
 	addPageDescription({
