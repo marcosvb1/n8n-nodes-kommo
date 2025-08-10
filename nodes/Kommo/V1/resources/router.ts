@@ -8,6 +8,8 @@ import * as tasks from './tasks';
 import * as companies from './companies';
 import * as notes from './notes';
 import * as lists from './lists';
+import * as customers from './customers';
+import * as transactions from './transactions';
 
 export async function router(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 	const items = this.getInputData();
@@ -36,8 +38,12 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				responseData = await companies[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'notes') {
 				responseData = await notes[kommo.operation].execute.call(this, i);
-			} else if (kommo.resource === 'lists') {
-				responseData = await lists[kommo.operation].execute.call(this, i);
+            } else if (kommo.resource === 'lists') {
+                responseData = await lists[kommo.operation].execute.call(this, i);
+            } else if (kommo.resource === 'customers') {
+                responseData = await customers[kommo.operation].execute.call(this, i);
+            } else if (kommo.resource === 'transactions') {
+                responseData = await transactions[kommo.operation].execute.call(this, i);
 			}
 
 			const executionData = this.helpers.constructExecutionMetaData(
