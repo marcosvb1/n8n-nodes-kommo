@@ -19,15 +19,12 @@ export async function execute(
   qs.limit = limit;
 
   const requestMethod = 'GET';
-  const base = 'customers/transactions';
-
-  // Apply filter BEFORE branching so it works for both returnAll and paged
-  if (customerId) {
-    (qs as any).filter = { customer_id: [Number(customerId)] } as any;
-  }
+  const endpoint = customerId
+    ? `customers/${Number(customerId)}/transactions`
+    : 'customers/transactions';
 
   if (returnAll) {
-    const pages = await apiRequestAllItems.call(this, requestMethod, base, body, qs);
+    const pages = await apiRequestAllItems.call(this, requestMethod, endpoint, body, qs);
     if (simplify) {
       const txs = pages.flatMap((page: any) => page?._embedded?.transactions ?? []);
       return this.helpers.returnJsonArray(txs);
@@ -35,7 +32,7 @@ export async function execute(
     return this.helpers.returnJsonArray(pages);
   }
 
-  const responseData = await apiRequest.call(this, requestMethod, base, body, qs);
+  const responseData = await apiRequest.call(this, requestMethod, endpoint, body, qs);
   if (simplify) {
     const txs = (responseData as any)?._embedded?.transactions ?? [];
     return this.helpers.returnJsonArray(txs);
