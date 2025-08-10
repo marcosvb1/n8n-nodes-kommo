@@ -23,7 +23,7 @@ export async function execute(
 
   // Apply filter BEFORE branching so it works for both returnAll and paged
   if (customerId) {
-    (qs as any).filter = { customer_id: customerId } as any;
+    (qs as any).filter = { customer_id: [Number(customerId)] } as any;
   }
 
   if (returnAll) {
