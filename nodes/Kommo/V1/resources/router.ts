@@ -17,8 +17,19 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 	let responseData: IDataObject | IDataObject[] = [];
 
 	for (let i = 0; i < items.length; i++) {
-		const resource = this.getNodeParameter<IKommo>('resource', i);
-		const operation = this.getNodeParameter('operation', i);
+        const resource = this.getNodeParameter<IKommo>('resource', i);
+        // Read operation with resource-specific fallback to avoid runtime crashes when UI fails to provide it
+        let operation: string;
+        if (resource === 'account') operation = this.getNodeParameter('operation', i, 'getInfo') as string;
+        else if (resource === 'contacts') operation = this.getNodeParameter('operation', i, 'getContacts') as string;
+        else if (resource === 'leads') operation = this.getNodeParameter('operation', i, 'getLeads') as string;
+        else if (resource === 'tasks') operation = this.getNodeParameter('operation', i, 'getTasks') as string;
+        else if (resource === 'companies') operation = this.getNodeParameter('operation', i, 'getCompany') as string;
+        else if (resource === 'notes') operation = this.getNodeParameter('operation', i, 'getNotes') as string;
+        else if (resource === 'lists') operation = this.getNodeParameter('operation', i, 'getLists') as string;
+        else if (resource === 'customers') operation = this.getNodeParameter('operation', i, 'getCustomers') as string;
+        else if (resource === 'transactions') operation = this.getNodeParameter('operation', i, 'getTransactions') as string;
+        else operation = this.getNodeParameter('operation', i) as string;
 
 		const kommo = {
 			resource,
@@ -26,7 +37,7 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 		} as IKommo;
 
 		try {
-			if (kommo.resource === 'account') {
+            if (kommo.resource === 'account') {
 				responseData = await account[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'contacts') {
 				responseData = await contacts[kommo.operation].execute.call(this, i);
