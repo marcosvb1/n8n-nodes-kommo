@@ -8,6 +8,7 @@ import * as tasks from './tasks';
 import * as companies from './companies';
 import * as notes from './notes';
 import * as lists from './lists';
+import * as unsorted from './unsorted';
 
 export async function router(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 	const items = this.getInputData();
@@ -38,6 +39,20 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				responseData = await notes[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'lists') {
 				responseData = await lists[kommo.operation].execute.call(this, i);
+			} else if (kommo.resource === 'unsorted') {
+				if (kommo.operation === 'get') {
+					responseData = await unsorted.get.execute.call(this, i);
+				} else if (kommo.operation === 'summary') {
+					responseData = await unsorted.summary.execute.call(this, i);
+				} else if (kommo.operation === 'create') {
+					responseData = await unsorted.create.execute.call(this, i);
+				} else if (kommo.operation === 'accept') {
+					responseData = await unsorted.accept.execute.call(this, i);
+				} else if (kommo.operation === 'link') {
+					responseData = await unsorted.link.execute.call(this, i);
+				} else if (kommo.operation === 'reject') {
+					responseData = await unsorted.reject.execute.call(this, i);
+				}
 			}
 
 			const executionData = this.helpers.constructExecutionMetaData(

@@ -15,6 +15,7 @@ import * as tasks from './resources/tasks';
 import * as companies from './resources/companies';
 import * as notes from './resources/notes';
 import * as lists from './resources/lists';
+import * as unsorted from './resources/unsorted';
 
 export class KommoV1 implements INodeType {
 	description: INodeTypeDescription;
@@ -111,6 +112,10 @@ export class KommoV1 implements INodeType {
 							name: 'Task',
 							value: 'tasks',
 						},
+						{
+							name: 'Unsorted',
+							value: 'unsorted',
+						},
 					],
 					default: 'account',
 				},
@@ -121,6 +126,7 @@ export class KommoV1 implements INodeType {
 				...tasks.descriptions,
 				...notes.descriptions,
 				...lists.descriptions,
+				...unsorted.descriptions,
 			],
 		};
 	}
