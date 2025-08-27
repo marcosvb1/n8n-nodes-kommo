@@ -1,6 +1,7 @@
 import { IDataObject, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
 import { apiRequest } from '../../../../transport';
 import { getTimestampFromDateString } from '../../../../helpers/getTimestampFromDateString';
+import { makeCustomFieldReqObject } from '../../../_components/CustomFieldsDescription';
 
 interface ICreateItemFrontend {
   source_name: string;
@@ -10,9 +11,9 @@ interface ICreateItemFrontend {
   request_id?: string;
   metadata?: { fields?: Record<string, string> };
   _embedded?: {
-    lead?: { name?: string; price?: number };
-    contact?: { name?: string; phone?: string; email?: string };
-    company?: { name?: string };
+    lead?: { name?: string; price?: number; visitor_uid?: string; tags?: string; custom_fields_values?: any };
+    contact?: { name?: string; phone?: string; email?: string; first_name?: string; last_name?: string; custom_fields_values?: any };
+    company?: { name?: string; custom_fields_values?: any };
   };
 }
 
@@ -52,9 +53,39 @@ export async function execute(
         referer: metadata.referer,
       },
       _embedded: {
-        leads: i._embedded?.lead ? [{ ...i._embedded.lead }] : undefined,
-        contacts: i._embedded?.contact ? [{ ...i._embedded.contact }] : undefined,
-        companies: i._embedded?.company ? [{ ...i._embedded.company }] : undefined,
+        leads: i._embedded?.lead
+          ? [
+              {
+                ...i._embedded.lead,
+                _embedded: i._embedded.lead.tags
+                  ? { tags: i._embedded.lead.tags.split(',').map((name) => ({ name: name.trim() })) }
+                  : undefined,
+                custom_fields_values: i._embedded.lead.custom_fields_values
+                  ? makeCustomFieldReqObject(i._embedded.lead.custom_fields_values as any)
+                  : undefined,
+              },
+            ]
+          : undefined,
+        contacts: i._embedded?.contact
+          ? [
+              {
+                ...i._embedded.contact,
+                custom_fields_values: i._embedded.contact.custom_fields_values
+                  ? makeCustomFieldReqObject(i._embedded.contact.custom_fields_values as any)
+                  : undefined,
+              },
+            ]
+          : undefined,
+        companies: i._embedded?.company
+          ? [
+              {
+                ...i._embedded.company,
+                custom_fields_values: i._embedded.company.custom_fields_values
+                  ? makeCustomFieldReqObject(i._embedded.company.custom_fields_values as any)
+                  : undefined,
+              },
+            ]
+          : undefined,
       },
     };
 

@@ -1,6 +1,7 @@
 import { IDisplayOptions } from 'n8n-workflow';
 import { IUnsortedProperties } from '../../../interfaces';
 import { addJsonParametersDescription } from '../../../_components/JsonParametersDescription';
+import { addCustomFieldDescription } from '../../../_components/CustomFieldsDescription';
 
 const displayOptions: IDisplayOptions | undefined = {
   show: {
@@ -14,7 +15,7 @@ export const description: IUnsortedProperties = [
   {
     displayName: 'Items',
     name: 'items',
-    placeholder: 'Add item',
+    placeholder: 'Add Item',
     type: 'fixedCollection',
     default: [],
     typeOptions: {
@@ -60,7 +61,7 @@ export const description: IUnsortedProperties = [
           {
             displayName: 'Metadata',
             name: 'metadata',
-            placeholder: 'Add field',
+            placeholder: 'Add Field',
             type: 'fixedCollection',
             default: {},
             options: [
@@ -95,25 +96,38 @@ export const description: IUnsortedProperties = [
               {
                 displayName: 'Lead',
                 name: 'lead',
-                values: [
+                type: 'collection',
+                default: {},
+                options: [
                   { displayName: 'Name', name: 'name', type: 'string', default: '' },
                   { displayName: 'Price', name: 'price', type: 'number', default: 0 },
+                  { displayName: 'Visitor UID', name: 'visitor_uid', type: 'string', default: '' },
+                  { displayName: 'Tags (Comma Separated)', name: 'tags', type: 'string', default: '' },
+                  addCustomFieldDescription('getLeadCustomFields'),
                 ],
               },
               {
                 displayName: 'Contact',
                 name: 'contact',
-                values: [
+                type: 'collection',
+                default: {},
+                options: [
+                  { displayName: 'Email', name: 'email', type: 'string', default: '', placeholder: 'name@email.com' },
+                  { displayName: 'First Name', name: 'first_name', type: 'string', default: '' },
+                  { displayName: 'Last Name', name: 'last_name', type: 'string', default: '' },
                   { displayName: 'Name', name: 'name', type: 'string', default: '' },
                   { displayName: 'Phone', name: 'phone', type: 'string', default: '' },
-                  { displayName: 'Email', name: 'email', type: 'string', default: '', placeholder: 'name@email.com' },
+                  addCustomFieldDescription('getContactCustomFields'),
                 ],
               },
               {
                 displayName: 'Company',
                 name: 'company',
-                values: [
+                type: 'collection',
+                default: {},
+                options: [
                   { displayName: 'Name', name: 'name', type: 'string', default: '' },
+                  addCustomFieldDescription('getCompanyCustomFields'),
                 ],
               },
             ],

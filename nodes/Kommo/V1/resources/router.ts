@@ -17,7 +17,13 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 
 	for (let i = 0; i < items.length; i++) {
 		const resource = this.getNodeParameter<IKommo>('resource', i);
-		const operation = this.getNodeParameter('operation', i, '');
+		let operation = '' as string;
+		try {
+			operation = this.getNodeParameter('operation', i) as string;
+		} catch (e) {
+			// fallback: try read raw parameters to avoid hard failure on older n8n
+			operation = ((this.getNode().parameters as unknown as { operation?: string })?.operation || '') as string;
+		}
 
 		const kommo = {
 			resource,
