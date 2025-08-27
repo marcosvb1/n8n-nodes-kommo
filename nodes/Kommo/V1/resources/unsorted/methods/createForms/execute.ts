@@ -22,7 +22,7 @@ export async function execute(
   index: number,
 ): Promise<INodeExecutionData[]> {
   const method = 'POST';
-  const endpoint = `leads/unsorted/forms`;
+  const endpoint = `leads/unsorted/forms/summary`;
 
   const jsonParams = (await this.getNodeParameter('json', 0)) as boolean;
   if (jsonParams) {
@@ -70,6 +70,9 @@ export async function execute(
           ? [
               {
                 ...i._embedded.contact,
+                // Ensure email and phone are in the base fields, not custom fields
+                email: i._embedded.contact.email || undefined,
+                phone: i._embedded.contact.phone || undefined,
                 custom_fields_values: i._embedded.contact.custom_fields_values
                   ? makeCustomFieldReqObject(i._embedded.contact.custom_fields_values as any)
                   : undefined,
