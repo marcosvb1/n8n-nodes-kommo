@@ -21,8 +21,19 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 		try {
 			operation = this.getNodeParameter('operation', i) as string;
 		} catch (e) {
-			// fallback: try read raw parameters to avoid hard failure on older n8n
-			operation = ((this.getNode().parameters as unknown as { operation?: string })?.operation || '') as string;
+			// fallback for compatibility with older n8n versions
+			try {
+				const nodeParams = this.getNode().parameters as any;
+				operation = nodeParams?.operation || '';
+			} catch (fallbackError) {
+				// if all fails, provide empty string
+				operation = '';
+			}
+		}
+		
+		// validate we have operation
+		if (!operation) {
+			throw new Error(`Missing operation parameter for resource: ${resource}`);
 		}
 
 		const kommo = {
