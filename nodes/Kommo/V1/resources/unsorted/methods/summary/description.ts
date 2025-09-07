@@ -10,16 +10,16 @@ const displayOptions: IDisplayOptions | undefined = {
 
 export const description: IUnsortedProperties = [
 	{
-		displayName: 'Category',
+		displayName: 'Categoria',
 		name: 'category',
 		type: 'options',
 		default: 'forms',
-		description: 'Unsorted category for summary',
+		description: 'Categoria de unsorted para o resumo',
 		options: [
-			{ name: 'Forms', value: 'forms' },
+			{ name: 'Formulários', value: 'forms' },
 			{ name: 'Chats', value: 'chats' },
 			{ name: 'SIP', value: 'sip' },
-			{ name: 'Mail', value: 'mail' },
+			{ name: 'E‑mail', value: 'mail' },
 		],
 		displayOptions,
 	},

@@ -12,7 +12,7 @@ interface ICreateItemFrontend {
   metadata?: { fields?: Record<string, string> };
   _embedded?: {
     lead?: { name?: string; price?: number; visitor_uid?: string; tags?: string; custom_fields_values?: any };
-    contact?: { name?: string; phone?: string; email?: string; first_name?: string; last_name?: string; custom_fields_values?: any };
+    contact?: { name?: string; first_name?: string; last_name?: string; custom_fields_values?: any };
     company?: { name?: string; custom_fields_values?: any };
   };
 }
@@ -70,9 +70,6 @@ export async function execute(
           ? [
               {
                 ...i._embedded.contact,
-                // Ensure email and phone are in the base fields, not custom fields
-                email: i._embedded.contact.email || undefined,
-                phone: i._embedded.contact.phone || undefined,
                 custom_fields_values: i._embedded.contact.custom_fields_values
                   ? makeCustomFieldReqObject(i._embedded.contact.custom_fields_values as any)
                   : undefined,
