@@ -34,7 +34,28 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 		
 		// validate we have operation
 		if (!operation) {
-			throw new Error(`Missing operation parameter for resource: ${resource}`);
+			// Set default operation based on resource
+			if (resource === 'purchases') {
+				operation = 'getPurchases';
+			} else if (resource === 'account') {
+				operation = 'getInfo';
+			} else if (resource === 'leads') {
+				operation = 'getLeads';
+			} else if (resource === 'contacts') {
+				operation = 'getContacts';
+			} else if (resource === 'companies') {
+				operation = 'getCompany';
+			} else if (resource === 'notes') {
+				operation = 'getNotes';
+			} else if (resource === 'tasks') {
+				operation = 'getTasks';
+			} else if (resource === 'lists') {
+				operation = 'getLists';
+			} else if (resource === 'unsorted') {
+				operation = 'get';
+			} else {
+				throw new Error(`Missing operation parameter for resource: ${resource}`);
+			}
 		}
 
 		const kommo = {
