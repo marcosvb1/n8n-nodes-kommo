@@ -30,7 +30,7 @@ export const descriptions: INodeProperties[] = [
 				name: 'Criar (Formulários)',
 				value: 'create',
 				description: 'Criar leads de entrada do tipo formulários',
-				action: 'criar unsorted forms',
+				action: 'Criar unsorted forms',
 			},
 			{
 				name: 'Listar',
