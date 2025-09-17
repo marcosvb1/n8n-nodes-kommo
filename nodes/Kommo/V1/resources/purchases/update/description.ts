@@ -19,7 +19,7 @@ export const updatePurchaseModel: INodeProperties[] = [
 export const description: IPurchasesProperties = [
 	...addJsonParametersDescription(displayOptions),
 	{
-		displayName: 'Purchase Catalog',
+		displayName: 'Purchase Catalog Name or ID',
 		name: 'catalog_id',
 		type: 'options',
 		typeOptions: {
@@ -27,7 +27,7 @@ export const description: IPurchasesProperties = [
 		},
 		default: '',
 		required: true,
-		description: 'Select the purchase catalog containing the purchases to update',
+		description: 'Select the purchase catalog containing the purchases to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions,
 	},
 	{

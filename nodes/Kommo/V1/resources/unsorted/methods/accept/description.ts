@@ -19,7 +19,7 @@ export const description: IUnsortedProperties = [
     displayOptions,
   },
   {
-    displayName: 'ID do Usuário',
+    displayName: 'ID Do Usuário',
     name: 'user_id',
     type: 'number',
     default: 0,
@@ -27,7 +27,7 @@ export const description: IUnsortedProperties = [
     displayOptions,
   },
   {
-    displayName: 'ID do Status',
+    displayName: 'ID Do Status',
     name: 'status_id',
     type: 'number',
     default: 0,

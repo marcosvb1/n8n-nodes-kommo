@@ -12,7 +12,7 @@ const displayOptions: IDisplayOptions | undefined = {
 export const description: IPurchasesProperties = [
 	...addJsonParametersDescription(displayOptions),
 	{
-		displayName: 'Purchase Catalog',
+		displayName: 'Purchase Catalog Name or ID',
 		name: 'catalog_id',
 		type: 'options',
 		typeOptions: {
@@ -20,7 +20,7 @@ export const description: IPurchasesProperties = [
 		},
 		default: '',
 		required: true,
-		description: 'Select the purchase catalog to get purchases from',
+		description: 'Select the purchase catalog to get purchases from. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions,
 	},
 	{
@@ -43,7 +43,6 @@ export const description: IPurchasesProperties = [
 		},
 		typeOptions: {
 			minValue: 1,
-			maxValue: 250,
 		},
 		default: 50,
 		description: 'Max number of results to return',

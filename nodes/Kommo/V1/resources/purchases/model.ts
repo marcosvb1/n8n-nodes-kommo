@@ -39,7 +39,7 @@ export const addInvoiceItemsDescription = (): INodeProperties => {
 				name: 'invoice_item',
 				values: [
 					{
-						displayName: 'Product',
+						displayName: 'Product Name or ID',
 						name: 'catalog_element_id',
 						type: 'options',
 						typeOptions: {
@@ -47,7 +47,7 @@ export const addInvoiceItemsDescription = (): INodeProperties => {
 						},
 						default: '',
 						required: true,
-						description: 'Select the product for this invoice item',
+						description: 'Select the product for this invoice item. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 					},
 					{
 						displayName: 'Quantity',

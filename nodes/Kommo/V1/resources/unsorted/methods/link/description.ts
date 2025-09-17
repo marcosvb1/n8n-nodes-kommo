@@ -19,7 +19,7 @@ export const description: IUnsortedProperties = [
     displayOptions,
   },
   {
-    displayName: 'Tipo da Entidade',
+    displayName: 'Tipo Da Entidade',
     name: 'entity_type',
     type: 'options',
     default: 'leads',
@@ -30,7 +30,7 @@ export const description: IUnsortedProperties = [
     displayOptions,
   },
   {
-    displayName: 'ID da Entidade',
+    displayName: 'ID Da Entidade',
     name: 'entity_id',
     type: 'number',
     default: 0,
@@ -38,7 +38,7 @@ export const description: IUnsortedProperties = [
     displayOptions,
   },
   {
-    displayName: 'ID do Usuário',
+    displayName: 'ID Do Usuário',
     name: 'user_id',
     type: 'number',
     default: 0,

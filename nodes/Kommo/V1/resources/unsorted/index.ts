@@ -30,13 +30,19 @@ export const descriptions: INodeProperties[] = [
 				name: 'Criar (Formulários)',
 				value: 'create',
 				description: 'Criar leads de entrada do tipo formulários',
-				action: 'Criar unsorted (forms)',
+				action: 'criar unsorted forms',
 			},
 			{
 				name: 'Listar',
 				value: 'get',
 				description: 'Listar leads de entrada (unsorted)',
 				action: 'Listar unsorted',
+			},
+			{
+				name: 'Rejeitar',
+				value: 'reject',
+				description: 'Rejeitar uma lead de entrada pelo UID',
+				action: 'Rejeitar unsorted por UID',
 			},
 			{
 				name: 'Resumo',
@@ -49,12 +55,6 @@ export const descriptions: INodeProperties[] = [
 				value: 'link',
 				description: 'Vincular um unsorted (tipo chat) a uma entidade',
 				action: 'Vincular unsorted por UID',
-			},
-			{
-				name: 'Rejeitar',
-				value: 'reject',
-				description: 'Rejeitar uma lead de entrada pelo UID',
-				action: 'Rejeitar unsorted por UID',
 			},
 		],
 		default: 'get',
