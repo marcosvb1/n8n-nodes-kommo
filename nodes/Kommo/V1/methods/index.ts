@@ -302,6 +302,81 @@ export const getLossReasons = cacheOptionsRequest(async function getLossReasons(
 // 	return [];
 // }
 
+// Purchase-specific methods
+export const getPurchaseCatalogs = cacheOptionsRequest(async function getPurchaseCatalogs(
+	this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+	const catalogsResponseData = await apiRequestAllItems.call(this, 'GET', 'catalogs', {});
+	return catalogsResponseData.flatMap((data) => {
+		if (!data?._embedded?.catalogs) return [];
+		return data._embedded.catalogs
+			.filter((catalog: ICatalog) => catalog.type === 'invoices')
+			.map((catalog: ICatalog) => ({
+				name: catalog.name,
+				value: catalog.id,
+			}));
+	});
+});
+
+export const getPurchaseProducts = cacheOptionsRequest(async function getPurchaseProducts(
+	this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+	const catalogId = await this.getNodeParameter('catalog_id', 0);
+	if (!catalogId) return [];
+
+	const elementsResponseData = await apiRequestAllItems.call(
+		this,
+		'GET',
+		`catalogs/${catalogId}/elements`,
+		{},
+	);
+	return elementsResponseData.flatMap((data) => {
+		if (!data?._embedded?.elements) return [];
+		return data._embedded.elements.map((el: ICatalogElement) => ({
+			name: el.name,
+			value: el.id,
+		}));
+	});
+});
+
+export const getPurchaseCatalogCustomFields = cacheOptionsRequest(async function getPurchaseCatalogCustomFields(
+	this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+	const catalog_id = await this.getNodeParameter('catalog_id', 0);
+
+	if (!catalog_id) {
+		throw new NodeOperationError(this.getNode(), 'No catalog selected');
+	}
+
+	// Verify it's an invoice catalog
+	const catalogsResponseData = await apiRequestAllItems.call(this, 'GET', 'catalogs', {});
+	const catalog = catalogsResponseData.flatMap((data) => {
+		if (!data?._embedded?.catalogs) return [];
+		return data._embedded.catalogs.find((catalog: ICatalog) => catalog.id === catalog_id);
+	}).filter(Boolean)[0];
+
+	if (!catalog || catalog.type !== 'invoices') {
+		throw new NodeOperationError(this.getNode(), 'Selected catalog is not an invoice catalog');
+	}
+
+	const cfResponseData: Array<IResponseData<'custom_fields', ICustomField>> =
+		await apiRequestAllItems.call(this, 'GET', `catalogs/${catalog_id}/custom_fields`, {});
+
+	const customFields = cfResponseData.reduce((acc: ICustomField[], response) => {
+		acc.push(...response._embedded.custom_fields);
+		return acc;
+	}, []);
+
+	if (!customFields?.length) {
+		return [];
+	}
+
+	return customFields.map((field) => ({
+		name: `${field.name} (${field.type})`,
+		value: JSON.stringify({ id: field.id, type: field.type }),
+	}));
+});
+
 export const getTags = cacheOptionsRequest(async function getTags(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {

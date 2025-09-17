@@ -1,0 +1,130 @@
+import { INodeProperties } from 'n8n-workflow';
+import { addCustomFieldDescription } from '../_components/CustomFieldsDescription';
+
+// Invoice item interfaces
+export interface IInvoiceItem {
+	catalog_element_id: number;
+	quantity: number;
+	unit_price: number;
+	discount?: number;
+	unit_type?: string;
+}
+
+export interface IInvoiceItemForm {
+	catalog_element_id: string;
+	quantity: number;
+	unit_price: number;
+	discount: number;
+	unit_type: string;
+}
+
+export interface IInvoiceItemsForm {
+	invoice_item: Array<IInvoiceItemForm>;
+}
+
+// Invoice items UI component
+export const addInvoiceItemsDescription = (): INodeProperties => {
+	return {
+		displayName: 'Invoice Items',
+		name: 'invoice_items',
+		placeholder: 'Add Invoice Item',
+		type: 'fixedCollection',
+		default: {},
+		typeOptions: {
+			multipleValues: true,
+		},
+		options: [
+			{
+				displayName: 'Invoice Item',
+				name: 'invoice_item',
+				values: [
+					{
+						displayName: 'Product',
+						name: 'catalog_element_id',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getPurchaseProducts',
+						},
+						default: '',
+						required: true,
+						description: 'Select the product for this invoice item',
+					},
+					{
+						displayName: 'Quantity',
+						name: 'quantity',
+						type: 'number',
+						default: 1,
+						required: true,
+						description: 'Quantity of the product',
+						typeOptions: {
+							minValue: 0,
+							numberPrecision: 2,
+						},
+					},
+					{
+						displayName: 'Unit Price',
+						name: 'unit_price',
+						type: 'number',
+						default: 0,
+						required: true,
+						description: 'Unit price of the product',
+						typeOptions: {
+							minValue: 0,
+							numberPrecision: 2,
+						},
+					},
+					{
+						displayName: 'Discount',
+						name: 'discount',
+						type: 'number',
+						default: 0,
+						description: 'Discount amount',
+						typeOptions: {
+							minValue: 0,
+							numberPrecision: 2,
+						},
+					},
+					{
+						displayName: 'Unit Type',
+						name: 'unit_type',
+						type: 'string',
+						default: 'pcs',
+						description: 'Unit of measurement (e.g., pcs, kg, hours)',
+					},
+				],
+			},
+		],
+	};
+};
+
+// Purchase model description
+export const purchaseModelDescription: INodeProperties[] = [
+	{
+		displayName: 'ID',
+		name: 'id',
+		type: 'number',
+		default: 0,
+		required: true,
+	},
+	{
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		default: '',
+		required: true,
+		description: 'Name of the purchase',
+	},
+	addInvoiceItemsDescription(),
+	addCustomFieldDescription('getPurchaseCatalogCustomFields'),
+];
+
+// Helper function to convert invoice items form to API format
+export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): IInvoiceItem[] => {
+	return invoiceItemsForm.invoice_item?.map((item) => ({
+		catalog_element_id: parseInt(item.catalog_element_id, 10),
+		quantity: item.quantity,
+		unit_price: item.unit_price,
+		discount: item.discount || 0,
+		unit_type: item.unit_type || 'pcs',
+	})) || [];
+};
