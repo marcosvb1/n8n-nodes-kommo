@@ -8,55 +8,79 @@ interface IPurchaseForm {
 	invoice_items?: IInvoiceItemsForm;
 	custom_fields_values?: any;
 	request_id?: string;
+    buyer?: {
+        buyer?: {
+            entity_type?: 'contacts';
+            mode: 'id' | 'name';
+            entity_id?: number;
+            contact_name?: string;
+            title?: string;
+        }
+    };
 }
 
 export async function execute(this: IExecuteFunctions, index: number): Promise<any> {
-	const catalog_id = this.getNodeParameter('catalog_id', index) as string;
-	const elements = (this.getNodeParameter('collection.element', index, []) as IPurchaseForm[]) || [];
+    const jsonParams = (await this.getNodeParameter('json', 0)) as boolean;
+    const catalog_id = this.getNodeParameter('catalog_id', index) as string;
 
-	const body: any = [];
+    if (jsonParams) {
+        const jsonString = (await this.getNodeParameter('jsonString', 0)) as string;
+        const endpoint = `catalogs/${catalog_id}/elements`;
+        return await apiRequest.call(this, 'POST', endpoint, JSON.parse(jsonString));
+    }
 
-	for (const element of elements) {
-		const purchaseData: any = {
-			name: element.name,
-		};
+    const elements = (this.getNodeParameter('collection.element', index, []) as IPurchaseForm[]) || [];
 
-		// Handle invoice items - convert to proper format for API
-		if (element.invoice_items?.invoice_item?.length) {
-			const invoiceItems = makeInvoiceItemsReqObject(element.invoice_items);
+    const body: any = [];
 
-			// In Kommo API, invoice items are stored as custom field value
-			// Find the invoice_items custom field and add the data
-			if (invoiceItems.length > 0) {
-				purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
+    for (const element of elements) {
+        const purchaseData: any = {
+            name: element.name,
+        };
 
-				// Note: This assumes there's a custom field of type 'items' for invoice items
-				// In practice, you might need to get the field ID from the catalog custom fields
-				purchaseData.custom_fields_values.push({
-					field_code: 'invoice_items', // or use field_id if known
-					values: [{ value: invoiceItems }]
-				});
-			}
-		}
+        // Buyer handling: allow by contact ID or by contact Name
+        const buyerBlock = element?.buyer?.buyer;
+        if (buyerBlock) {
+            if (buyerBlock.mode === 'id' && buyerBlock.entity_id) {
+                purchaseData._embedded = purchaseData._embedded || {};
+                const entityType = buyerBlock.entity_type || 'contacts';
+                purchaseData._embedded[entityType] = [ { id: buyerBlock.entity_id } ];
+            } else if (buyerBlock.mode === 'name' && buyerBlock.title) {
+                // When not linking to a contact, use Title as purchase name
+                purchaseData.name = buyerBlock.title;
+            }
+        }
 
-		// Handle other custom fields
-		if (element.custom_fields_values) {
-			const customFields = makeCustomFieldReqObject(element.custom_fields_values);
-			if (customFields.length > 0) {
-				purchaseData.custom_fields_values = [
-					...(purchaseData.custom_fields_values || []),
-					...customFields
-				];
-			}
-		}
+        if (element.invoice_items?.invoice_item?.length) {
+            const invoiceItems = makeInvoiceItemsReqObject(element.invoice_items);
 
-		if (element.request_id) {
-			purchaseData.request_id = element.request_id;
-		}
+            if (invoiceItems.length > 0) {
+                purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
 
-		body.push(purchaseData);
-	}
+                purchaseData.custom_fields_values.push({
+                    field_code: 'invoice_items',
+                    values: [{ value: invoiceItems }]
+                });
+            }
+        }
 
-	const endpoint = `catalogs/${catalog_id}/elements`;
-	return await apiRequest.call(this, 'POST', endpoint, body);
+        if (element.custom_fields_values) {
+            const customFields = makeCustomFieldReqObject(element.custom_fields_values);
+            if (customFields.length > 0) {
+                purchaseData.custom_fields_values = [
+                    ...(purchaseData.custom_fields_values || []),
+                    ...customFields
+                ];
+            }
+        }
+
+        if (element.request_id) {
+            purchaseData.request_id = element.request_id;
+        }
+
+        body.push(purchaseData);
+    }
+
+    const endpoint = `catalogs/${catalog_id}/elements`;
+    return await apiRequest.call(this, 'POST', endpoint, body);
 }

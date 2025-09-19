@@ -9,56 +9,81 @@ interface IPurchaseUpdateForm {
 	invoice_items?: IInvoiceItemsForm;
 	custom_fields_values?: any;
 	request_id?: string;
+    buyer?: {
+        buyer?: {
+            entity_type?: 'contacts';
+            mode: 'id' | 'name';
+            entity_id?: number;
+            contact_name?: string;
+            title?: string;
+        }
+    };
 }
 
 export async function execute(this: IExecuteFunctions, index: number): Promise<any> {
-	const catalog_id = this.getNodeParameter('catalog_id', index) as string;
-	const elements = (this.getNodeParameter('collection.element', index, []) as IPurchaseUpdateForm[]) || [];
+    const jsonParams = (await this.getNodeParameter('json', 0)) as boolean;
+    const catalog_id = this.getNodeParameter('catalog_id', index) as string;
 
-	const body: any = [];
+    if (jsonParams) {
+        const jsonString = (await this.getNodeParameter('jsonString', 0)) as string;
+        const endpoint = `catalogs/${catalog_id}/elements`;
+        return await apiRequest.call(this, 'PATCH', endpoint, JSON.parse(jsonString));
+    }
 
-	for (const element of elements) {
-		const purchaseData: any = {
-			id: element.id,
-		};
+    const elements = (this.getNodeParameter('collection.element', index, []) as IPurchaseUpdateForm[]) || [];
 
-		if (element.name !== undefined) {
-			purchaseData.name = element.name;
-		}
+    const body: any = [];
 
-		// Handle invoice items - convert to proper format for API
-		if (element.invoice_items?.invoice_item?.length) {
-			const invoiceItems = makeInvoiceItemsReqObject(element.invoice_items);
+    for (const element of elements) {
+        const purchaseData: any = {
+            id: element.id,
+        };
 
-			if (invoiceItems.length > 0) {
-				purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
+        if (element.name !== undefined) {
+            purchaseData.name = element.name;
+        }
 
-				// Add invoice items as custom field
-				purchaseData.custom_fields_values.push({
-					field_code: 'invoice_items', // or use field_id if known
-					values: [{ value: invoiceItems }]
-				});
-			}
-		}
+        const buyerBlock = element?.buyer?.buyer;
+        if (buyerBlock) {
+            if (buyerBlock.mode === 'id' && buyerBlock.entity_id) {
+                purchaseData._embedded = purchaseData._embedded || {};
+                const entityType = buyerBlock.entity_type || 'contacts';
+                purchaseData._embedded[entityType] = [ { id: buyerBlock.entity_id } ];
+            } else if (buyerBlock.mode === 'name' && buyerBlock.title) {
+                purchaseData.name = buyerBlock.title;
+            }
+        }
 
-		// Handle other custom fields
-		if (element.custom_fields_values) {
-			const customFields = makeCustomFieldReqObject(element.custom_fields_values);
-			if (customFields.length > 0) {
-				purchaseData.custom_fields_values = [
-					...(purchaseData.custom_fields_values || []),
-					...customFields
-				];
-			}
-		}
+        if (element.invoice_items?.invoice_item?.length) {
+            const invoiceItems = makeInvoiceItemsReqObject(element.invoice_items);
 
-		if (element.request_id) {
-			purchaseData.request_id = element.request_id;
-		}
+            if (invoiceItems.length > 0) {
+                purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
 
-		body.push(purchaseData);
-	}
+                purchaseData.custom_fields_values.push({
+                    field_code: 'invoice_items',
+                    values: [{ value: invoiceItems }]
+                });
+            }
+        }
 
-	const endpoint = `catalogs/${catalog_id}/elements`;
-	return await apiRequest.call(this, 'PATCH', endpoint, body);
+        if (element.custom_fields_values) {
+            const customFields = makeCustomFieldReqObject(element.custom_fields_values);
+            if (customFields.length > 0) {
+                purchaseData.custom_fields_values = [
+                    ...(purchaseData.custom_fields_values || []),
+                    ...customFields
+                ];
+            }
+        }
+
+        if (element.request_id) {
+            purchaseData.request_id = element.request_id;
+        }
+
+        body.push(purchaseData);
+    }
+
+    const endpoint = `catalogs/${catalog_id}/elements`;
+    return await apiRequest.call(this, 'PATCH', endpoint, body);
 }

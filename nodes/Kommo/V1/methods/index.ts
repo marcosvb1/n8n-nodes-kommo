@@ -318,10 +318,26 @@ export const getPurchaseCatalogs = cacheOptionsRequest(async function getPurchas
 	});
 });
 
+// Product-specific methods for invoice items
+export const getProductCatalogs = cacheOptionsRequest(async function getProductCatalogs(
+    this: ILoadOptionsFunctions,
+): Promise<INodePropertyOptions[]> {
+    const catalogsResponseData = await apiRequestAllItems.call(this, 'GET', 'catalogs', {});
+    return catalogsResponseData.flatMap((data) => {
+        if (!data?._embedded?.catalogs) return [];
+        return data._embedded.catalogs
+            .filter((catalog: ICatalog) => catalog.type === 'products')
+            .map((catalog: ICatalog) => ({
+                name: catalog.name,
+                value: catalog.id,
+            }));
+    });
+});
+
 export const getPurchaseProducts = cacheOptionsRequest(async function getPurchaseProducts(
 	this: ILoadOptionsFunctions,
 ): Promise<INodePropertyOptions[]> {
-	const catalogId = await this.getNodeParameter('catalog_id', 0);
+    const catalogId = await this.getNodeParameter('product_catalog_id', 0);
 	if (!catalogId) return [];
 
 	const elementsResponseData = await apiRequestAllItems.call(

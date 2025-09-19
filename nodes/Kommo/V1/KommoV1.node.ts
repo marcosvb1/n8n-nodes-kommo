@@ -80,6 +80,13 @@ export class KommoV1 implements INodeType {
 					default: 'oAuth2',
 				},
 				{
+					displayName: 'Simplify Output',
+					name: 'simplify',
+					type: 'boolean',
+					default: true,
+					description: 'Whether to return simplified arrays/objects instead of raw API envelopes',
+				},
+				{
 					displayName: 'Resource',
 					name: 'resource',
 					type: 'options',

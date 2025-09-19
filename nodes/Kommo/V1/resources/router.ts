@@ -11,6 +11,26 @@ import * as lists from './lists';
 import * as purchases from './purchases';
 import * as unsorted from './unsorted';
 
+function simplifyPayload(payload: any): any {
+	if (Array.isArray(payload)) return payload.map(simplifyPayload);
+	if (!payload || typeof payload !== 'object') return payload;
+
+	// Extract main embedded arrays if present
+	if (payload._embedded && typeof payload._embedded === 'object') {
+		const embedded = payload._embedded as Record<string, any>;
+		const firstKey = Object.keys(embedded)[0];
+		if (firstKey && Array.isArray(embedded[firstKey])) {
+			return embedded[firstKey].map((el: any) => simplifyPayload(el));
+		}
+	}
+
+	// Remove noise keys
+	const { _links, _embedded, ...rest } = payload as Record<string, any>;
+	// Recursively simplify nested objects/arrays
+	for (const key of Object.keys(rest)) rest[key] = simplifyPayload(rest[key]);
+	return rest;
+}
+
 export async function router(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 	const items = this.getInputData();
 	const operationResult: INodeExecutionData[] = [];
@@ -31,7 +51,7 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				operation = '';
 			}
 		}
-		
+
 		// validate we have operation
 		if (!operation) {
 			// Set default operation based on resource
@@ -96,8 +116,11 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				}
 			}
 
+			const simplify = this.getNodeParameter('simplify', 0, true) as boolean;
+			const normalized = simplify ? simplifyPayload(responseData) : responseData;
+
 			const executionData = this.helpers.constructExecutionMetaData(
-				this.helpers.returnJsonArray(responseData),
+				this.helpers.returnJsonArray(normalized as IDataObject[]),
 				{ itemData: { item: i } },
 			);
 			operationResult.push(...executionData);

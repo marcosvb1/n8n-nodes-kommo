@@ -39,11 +39,11 @@ export const addInvoiceItemsDescription = (): INodeProperties => {
 				name: 'invoice_item',
 				values: [
 					{
-						displayName: 'Product Name or ID',
+                        displayName: 'Product Name or ID',
 						name: 'catalog_element_id',
 						type: 'options',
 						typeOptions: {
-							loadOptionsMethod: 'getPurchaseProducts',
+                            loadOptionsMethod: 'getPurchaseProducts',
 						},
 						default: '',
 						required: true,
@@ -113,6 +113,50 @@ export const purchaseModelDescription: INodeProperties[] = [
 		default: '',
 		required: true,
 		description: 'Name of the purchase',
+	},
+	{
+		displayName: 'Buyer',
+		name: 'buyer',
+		type: 'fixedCollection',
+		default: {},
+		options: [
+			{
+				displayName: 'Buyer',
+				name: 'buyer',
+				values: [
+					{
+						displayName: 'Buyer Type',
+						name: 'mode',
+						type: 'options',
+						default: 'id',
+						options: [
+							{ name: 'Contact (ID)', value: 'id' },
+							{ name: 'Name (Title)', value: 'name' },
+						],
+					},
+					{
+						displayName: 'Entity ID',
+						name: 'entity_id',
+						type: 'number',
+						default: 0,
+						displayOptions: {
+							show: { mode: ['id'] },
+						},
+					},
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
+						required: true,
+						description: 'Buyer name to use when not linking to a contact',
+						displayOptions: {
+							show: { mode: ['name'] },
+						},
+					},
+				],
+			},
+		],
 	},
 	addInvoiceItemsDescription(),
 	addCustomFieldDescription('getPurchaseCatalogCustomFields'),

@@ -30,6 +30,23 @@ export const description: IPurchasesProperties = [
 		description: 'Select the purchase catalog containing the purchases to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions,
 	},
+    {
+        displayName: 'Product Catalog Name or ID',
+        name: 'product_catalog_id',
+        type: 'options',
+        typeOptions: {
+            loadOptionsMethod: 'getProductCatalogs',
+        },
+        default: '',
+        required: true,
+        description: 'Select the product catalog to pick products from. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+        displayOptions: {
+            show: {
+                ...displayOptions?.show,
+                json: [false],
+            },
+        },
+    },
 	{
 		displayName: 'Purchases',
 		name: 'collection',
