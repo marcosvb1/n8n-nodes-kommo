@@ -1,6 +1,6 @@
 {
   "name": "@marcosvb1/n8n-nodes-kommo",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "n8n node for Kommo API",
   "keywords": [
     "n8n-community-node-package",
@@ -38,6 +38,9 @@
     "nodes": [
       "dist/nodes/Kommo/Kommo.node.js"
     ]
+  },
+  "dependencies": {
+    "async-await-mutex-lock": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
