@@ -32,7 +32,7 @@ export class KommoOAuth2Api implements ICredentialType {
 			displayName: 'Access Token URL',
 			name: 'accessTokenUrl',
 			type: 'hidden',
-			default: '=https://{{$self["subdomain"]}}.kommo.com/oauth2/access_token',
+			default: '=https://{{$self?.["subdomain"]}}.kommo.com/oauth2/access_token',
 		},
 		{
 			displayName: 'Client ID',

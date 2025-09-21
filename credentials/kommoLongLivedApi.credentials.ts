@@ -34,7 +34,7 @@ export class KommoLongLivedApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: `=https://{{$credentials.subdomain}}.kommo.com/api/v4/`,
+			baseURL: `=https://{{$credentials?.subdomain}}.kommo.com/api/v4/`,
 			url: 'account',
 		},
 	};
