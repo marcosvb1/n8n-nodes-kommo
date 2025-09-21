@@ -162,22 +162,61 @@ export const purchaseModelDescription: INodeProperties[] = [
 ];
 
 // Helper function to convert invoice items form to API format
-export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): Array<Record<string, any>> => {
-    return (
-        invoiceItemsForm.invoice_item?.map((item) => {
-            const out: Record<string, any> = {
-                quantity: item.quantity,
-                unit_price: item.unit_price,
-                unit_type: item.unit_type || 'pcs',
-            };
-            if (item.catalog_element_id) {
-                const parsed = parseInt(item.catalog_element_id, 10);
-                if (!Number.isNaN(parsed)) out.product_id = parsed;
+// Baseado nos testes: campo items aceita objeto único, não array
+export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): Record<string, any> | null => {
+    const items = invoiceItemsForm.invoice_item;
+    if (!items || items.length === 0) {
+        return null;
+    }
+    
+    // Para campo de tipo "items", usar apenas o primeiro item como objeto
+    // Se múltiplos items são necessários, devem ser enviados como múltiplos values
+    const firstItem = items[0];
+    const itemObject: Record<string, any> = {
+        quantity: firstItem.quantity,
+        unit_price: firstItem.unit_price,
+        unit_type: firstItem.unit_type || 'pcs',
+    };
+    
+    if (firstItem.catalog_element_id) {
+        const parsed = parseInt(firstItem.catalog_element_id, 10);
+        if (!Number.isNaN(parsed)) {
+            itemObject.product_id = parsed;
+        }
+    }
+    
+    if (firstItem.discount && Number(firstItem.discount) > 0) {
+        itemObject.discount = { type: 'amount', value: Number(firstItem.discount) };
+    }
+    
+    return itemObject;
+};
+
+// Helper function para converter múltiplos items em múltiplos values
+export const makeMultipleInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): Array<{ value: Record<string, any> }> => {
+    const items = invoiceItemsForm.invoice_item;
+    if (!items || items.length === 0) {
+        return [];
+    }
+    
+    return items.map((item) => {
+        const itemObject: Record<string, any> = {
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+            unit_type: item.unit_type || 'pcs',
+        };
+        
+        if (item.catalog_element_id) {
+            const parsed = parseInt(item.catalog_element_id, 10);
+            if (!Number.isNaN(parsed)) {
+                itemObject.product_id = parsed;
             }
-            if (item.discount && Number(item.discount) > 0) {
-                out.discount = { type: 'amount', value: Number(item.discount) };
-            }
-            return out;
-        }) || []
-    );
+        }
+        
+        if (item.discount && Number(item.discount) > 0) {
+            itemObject.discount = { type: 'amount', value: Number(item.discount) };
+        }
+        
+        return { value: itemObject };
+    });
 };

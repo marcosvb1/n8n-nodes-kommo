@@ -69,12 +69,12 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
         if (element.invoice_items?.invoice_item?.length) {
             const invoiceItems = makeInvoiceItemsReqObject(element.invoice_items);
 
-            if (invoiceItems.length > 0) {
+            if (invoiceItems) {
                 purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
 
                 purchaseData.custom_fields_values.push({
                     field_id: itemsField.id,
-                    values: invoiceItems.map((it: any) => ({ value: it })),
+                    values: [{ value: invoiceItems }], // Objeto único conforme descoberto nos testes
                 });
             }
         }

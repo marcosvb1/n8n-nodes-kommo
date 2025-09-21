@@ -19,16 +19,17 @@ export const createPurchaseModel: INodeProperties[] = [
 export const description: IPurchasesProperties = [
 	...addJsonParametersDescription(displayOptions),
 	{
-		displayName: 'Purchase Catalog Name or ID',
-		name: 'catalog_id',
-		type: 'options',
-		typeOptions: {
-			loadOptionsMethod: 'getPurchaseCatalogs',
-		},
+		displayName: 'Info',
+		name: 'info',
+		type: 'notice',
 		default: '',
-		required: true,
-		description: 'Select the purchase catalog to create the purchase in. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-		displayOptions,
+		description: 'O catálogo de invoices será identificado automaticamente. Certifique-se de que existe um catálogo com tipo "invoices" na sua conta Kommo.',
+		displayOptions: {
+			show: {
+				...displayOptions.show,
+				json: [false],
+			},
+		},
 	},
     {
         displayName: 'Product Catalog Name or ID',
