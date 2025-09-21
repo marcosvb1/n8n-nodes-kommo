@@ -2,6 +2,7 @@ import { IExecuteFunctions, NodeOperationError } from 'n8n-workflow';
 import { apiRequest } from '../../../transport';
 import { makeCustomFieldReqObject } from '../../_components/CustomFieldsDescription';
 import { makeInvoiceItemsReqObject, IInvoiceItemsForm } from '../model';
+import { normalizeId } from '../../../helpers/endpointUtils';
 
 interface IPurchaseForm {
 	name: string;
@@ -21,11 +22,20 @@ interface IPurchaseForm {
 
 export async function execute(this: IExecuteFunctions, index: number): Promise<any> {
     const jsonParams = (await this.getNodeParameter('json', 0)) as boolean;
-    const catalog_id = this.getNodeParameter('catalog_id', index) as string;
+
+    // Usar apenas endpoint de listas conforme update
+    const catalog_id = normalizeId(this.getNodeParameter('catalog_id', index) as string);
+
+    if (!catalog_id) {
+        throw new NodeOperationError(this.getNode(), 'catalog_id é obrigatório', {
+            description: 'Selecione um catálogo de purchases válido.'
+        });
+    }
+
+    const endpoint = `catalogs/${catalog_id}/elements`;
 
     if (jsonParams) {
         const jsonString = (await this.getNodeParameter('jsonString', 0)) as string;
-        const endpoint = `catalogs/${catalog_id}/elements`;
         return await apiRequest.call(this, 'POST', endpoint, JSON.parse(jsonString));
     }
 
@@ -94,6 +104,5 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
         body.push(purchaseData);
     }
 
-    const endpoint = `catalogs/${catalog_id}/elements`;
     return await apiRequest.call(this, 'POST', endpoint, body);
 }
