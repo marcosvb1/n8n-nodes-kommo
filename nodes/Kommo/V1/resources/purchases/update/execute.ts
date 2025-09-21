@@ -1,4 +1,4 @@
-import { IExecuteFunctions } from 'n8n-workflow';
+import { IExecuteFunctions, NodeOperationError } from 'n8n-workflow';
 import { apiRequest } from '../../../transport';
 import { makeCustomFieldReqObject } from '../../_components/CustomFieldsDescription';
 import { makeInvoiceItemsReqObject, IInvoiceItemsForm } from '../model';
@@ -32,6 +32,15 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
 
     const elements = (this.getNodeParameter('collection.element', index, []) as IPurchaseUpdateForm[]) || [];
 
+    // Locate catalog custom field of type "items" to attach invoice items
+    const cfResponse = await apiRequest.call(this, 'GET', `catalogs/${catalog_id}/custom_fields`, {});
+    const itemsField = cfResponse?._embedded?.custom_fields?.find((f: any) => f?.type === 'items');
+    if (!itemsField?.id) {
+        throw new NodeOperationError(this.getNode(), 'Catalog does not have an items-type custom field. Please add it in Kommo.', {
+            description: 'Expected a custom field with type = items in the selected invoice catalog',
+        });
+    }
+
     const body: any = [];
 
     for (const element of elements) {
@@ -61,7 +70,7 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
                 purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
 
                 purchaseData.custom_fields_values.push({
-                    field_code: 'items',
+                    field_id: itemsField.id,
                     values: [{ value: invoiceItems }]
                 });
             }
