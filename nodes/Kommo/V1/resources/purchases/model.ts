@@ -1,5 +1,4 @@
 import { INodeProperties } from 'n8n-workflow';
-import { addCustomFieldDescription } from '../_components/CustomFieldsDescription';
 
 // Invoice item interfaces
 export interface IInvoiceItem {
@@ -160,7 +159,6 @@ export const purchaseModelDescription: INodeProperties[] = [
 		],
 	},
 	addInvoiceItemsDescription(),
-	addCustomFieldDescription('getPurchaseCatalogCustomFields'),
 ];
 
 // Helper function to convert invoice items form to API format
