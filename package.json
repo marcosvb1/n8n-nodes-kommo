@@ -40,8 +40,8 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/kommoOAuth2Api.credentials.js",
-      "dist/credentials/kommoLongLivedApi.credentials.js"
+      "dist/credentials/KommoOAuth2Api.credentials.js",
+      "dist/credentials/KommoLongLivedApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/Kommo/Kommo.node.js"
