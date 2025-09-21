@@ -48,7 +48,7 @@ export class kommoOAuth2Api implements ICredentialType {
 			name: 'clientSecret',
 			type: 'string',
 			typeOptions: { password: true },
-			default: '****************************************',
+			default: '',
 			description: 'Secret key from your integration in your kommo account',
 			required: true,
 		},
