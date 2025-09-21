@@ -39,15 +39,6 @@ export class KommoV1 implements INodeType {
 			outputs: ['main'] as any,
 			credentials: [
 				{
-					name: 'kommoOAuth2Api',
-					required: true,
-					displayOptions: {
-						show: {
-							authentication: ['oAuth2'],
-						},
-					},
-				},
-				{
 					name: 'kommoLongLivedApi',
 					required: true,
 					displayOptions: {
@@ -59,6 +50,15 @@ export class KommoV1 implements INodeType {
 						request: {
 							method: 'GET',
 							url: 'account',
+						},
+					},
+				},
+				{
+					name: 'kommoOAuth2Api',
+					required: true,
+					displayOptions: {
+						show: {
+							authentication: ['oAuth2'],
 						},
 					},
 				},
@@ -78,7 +78,7 @@ export class KommoV1 implements INodeType {
 							value: 'oAuth2',
 						},
 					],
-					default: 'oAuth2',
+					default: 'longLivedToken',
 				},
 				{
 					displayName: 'Simplify Output',
