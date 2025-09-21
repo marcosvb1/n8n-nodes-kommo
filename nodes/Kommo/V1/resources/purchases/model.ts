@@ -3,6 +3,7 @@ import { addCustomFieldDescription } from '../_components/CustomFieldsDescriptio
 
 // Invoice item interfaces
 export interface IInvoiceItem {
+    catalog_element_id?: number;
     quantity: number;
     unit_price: number;
     unit_type?: string;
@@ -171,6 +172,10 @@ export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): 
                 unit_price: item.unit_price,
                 unit_type: item.unit_type || 'pcs',
             };
+            if (item.catalog_element_id) {
+                const parsed = parseInt(item.catalog_element_id, 10);
+                if (!Number.isNaN(parsed)) out.catalog_element_id = parsed;
+            }
             if (item.discount && Number(item.discount) > 0) {
                 out.discount = { type: 'amount', value: Number(item.discount) };
             }
