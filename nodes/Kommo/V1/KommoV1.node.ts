@@ -18,7 +18,6 @@ import * as lists from './resources/lists';
 import * as purchases from './resources/purchases';
 import * as unsorted from './resources/unsorted';
 import * as customers from './resources/customers';
-import * as transactions from './resources/transactions';
 
 export class KommoV1 implements INodeType {
 	description: INodeTypeDescription;
@@ -103,10 +102,22 @@ export class KommoV1 implements INodeType {
 						{ name: 'Note', value: 'notes' },
 						{ name: 'Purchase', value: 'purchases' },
 						{ name: 'Task', value: 'tasks' },
-						{ name: 'Transaction', value: 'transactions' },
 						{ name: 'Unsorted', value: 'unsorted' },
 					],
 					default: 'account',
+				},
+				{
+					displayName: 'Search Actions',
+					name: 'actionSearch',
+					type: 'string',
+					default: '',
+					placeholder: 'Type to search actions...',
+					description: 'Search for specific actions within the selected resource',
+					displayOptions: {
+						show: {
+							resource: ['leads', 'contacts', 'companies', 'customers', 'notes', 'tasks', 'lists', 'purchases', 'unsorted'],
+						},
+					},
 				},
 				...account.descriptions,
 				...companies.descriptions,
@@ -118,7 +129,6 @@ export class KommoV1 implements INodeType {
 				...purchases.descriptions,
 				...unsorted.descriptions,
 				...customers.descriptions,
-				...transactions.descriptions,
 			],
 		};
 	}

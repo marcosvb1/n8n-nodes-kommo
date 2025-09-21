@@ -7,7 +7,6 @@ type IKommoMap = {
 	companies: 'getCompany' | 'createCompany' | 'updateCompany';
 	notes: 'getNotes' | 'createNotes' | 'updateNotes';
 	customers: 'getCustomers' | 'createCustomers' | 'updateCustomers' | 'setCustomersMode';
-	transactions: 'getTransactions' | 'createTransactions' | 'updateTransactions';
 	unsorted: 'get' | 'create' | 'accept' | 'link' | 'reject' | 'summary';
 	pipelines: 'get' | 'create' | 'update' | 'remove';
 	statuses: 'get' | 'create' | 'update' | 'remove';
@@ -30,7 +29,6 @@ export type ILeadsKommo = Entity<IKommoMap, 'leads'>;
 export type IContactsKommo = Entity<IKommoMap, 'contacts'>;
 export type ICompaniesKommo = Entity<IKommoMap, 'companies'>;
 export type ICustomersKommo = Entity<IKommoMap, 'customers'>;
-export type ITransactionsKommo = Entity<IKommoMap, 'transactions'>;
 export type IUnsortedKommo = Entity<IKommoMap, 'unsorted'>;
 export type IPipelinesKommo = Entity<IKommoMap, 'pipelines'>;
 export type IStatusesKommo = Entity<IKommoMap, 'statuses'>;
@@ -52,7 +50,6 @@ export type ITasksProperties = PropertiesOf<ITasksKommo>;
 export type INotesProperties = PropertiesOf<INotesKommo>;
 export type IListsProperties = PropertiesOf<IListsKommo>;
 export type ICustomersProperties = PropertiesOf<ICustomersKommo>;
-export type ITransactionsProperties = PropertiesOf<ITransactionsKommo>;
 export type IPurchasesProperties = PropertiesOf<IPurchasesKommo>;
 
 export interface IAttachment {

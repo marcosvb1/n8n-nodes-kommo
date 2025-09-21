@@ -28,6 +28,7 @@ export class kommoLongLivedApi implements ICredentialType {
 			type: 'string',
 			typeOptions: { password: true },
 			default: '',
+			required: true,
 		},
 	];
 
