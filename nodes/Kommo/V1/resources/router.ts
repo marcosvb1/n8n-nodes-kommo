@@ -11,6 +11,7 @@ import * as lists from './lists';
 import * as purchases from './purchases';
 import * as unsorted from './unsorted';
 import * as customers from './customers';
+import * as webhooks from './webhooks';
 
 function simplifyPayload(payload: any): any {
 	if (Array.isArray(payload)) return payload.map(simplifyPayload);
@@ -50,6 +51,7 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 		else if (resource === 'lists') operation = this.getNodeParameter('operation', i, 'getLists') as string;
 		else if (resource === 'customers') operation = this.getNodeParameter('operation', i, 'getCustomers') as string;
 		else if (resource === 'purchases') operation = this.getNodeParameter('operation', i, 'getPurchases') as string;
+		else if (resource === 'webhooks') operation = this.getNodeParameter('operation', i, 'create') as string;
 		else if (resource === 'unsorted') operation = this.getNodeParameter('operation', i, 'get') as string;
 		else operation = this.getNodeParameter('operation', i) as string;
 
@@ -77,6 +79,8 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				responseData = await customers[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'purchases') {
 				responseData = await purchases[kommo.operation].execute.call(this, i);
+			} else if (kommo.resource === 'webhooks') {
+				responseData = await webhooks[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'unsorted') {
 				if (kommo.operation === 'get') {
 					responseData = await unsorted.get.execute.call(this, i);

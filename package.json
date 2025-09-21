@@ -1,6 +1,6 @@
 {
   "name": "@marcosvb1/n8n-nodes-kommo",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "n8n node for Kommo API",
   "keywords": [
     "n8n-community-node-package",
@@ -8,24 +8,16 @@
     "n8n"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/marcosvb1/n8n-nodes-kommo#readme",
   "author": {
-    "name": "Yaroslav Tolstoy",
-    "url": "https://t.me/yatolstoy"
+    "name": "marcosvb1",
+    "email": "marcosvb1@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/marcosvb1/n8n-nodes-kommo.git"
+    "url": "git+https://github.com/marcosvb1/n8n-nodes-kommo.git"
   },
-  "engines": {
-    "node": ">=18.10",
-    "pnpm": ">=9.1"
-  },
-  "packageManager": "pnpm@9.1.4",
   "main": "index.js",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "tsc && gulp build:icons",
     "dev": "tsc --watch",
@@ -40,28 +32,24 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/KommoOAuth2Api.credentials.js",
-      "dist/credentials/KommoLongLivedApi.credentials.js"
+      "dist/credentials/KommoLongLivedApi.credentials.js",
+      "dist/credentials/KommoOAuth2Api.credentials.js"
     ],
     "nodes": [
       "dist/nodes/Kommo/Kommo.node.js"
     ]
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.7.5",
-    "@typescript-eslint/parser": "^7.15.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-n8n-nodes-base": "^1.16.1",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.11.0",
     "gulp": "^4.0.2",
     "n8n-workflow": "*",
-    "prettier": "^3.3.2",
-    "typescript": "^5.5.3"
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.0"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
-  },
-  "dependencies": {
-    "async-await-mutex-lock": "^1.0.11"
   }
 }

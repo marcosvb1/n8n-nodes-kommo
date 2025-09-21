@@ -20,6 +20,7 @@ type IKommoMap = {
 		| 'addListElements'
 		| 'updateListElements';
 	purchases: 'getPurchases' | 'createPurchases' | 'updatePurchases';
+	webhooks: 'create' | 'get' | 'delete';
 };
 
 export type IKommo = AllEntities<IKommoMap>;
@@ -37,6 +38,7 @@ export type ITasksKommo = Entity<IKommoMap, 'tasks'>;
 export type INotesKommo = Entity<IKommoMap, 'notes'>;
 export type IListsKommo = Entity<IKommoMap, 'lists'>;
 export type IPurchasesKommo = Entity<IKommoMap, 'purchases'>;
+export type IWebhooksKommo = Entity<IKommoMap, 'webhooks'>;
 
 export type IAccountProperties = PropertiesOf<IAccountKommo>;
 export type ILeadsProperties = PropertiesOf<ILeadsKommo>;
@@ -51,6 +53,7 @@ export type INotesProperties = PropertiesOf<INotesKommo>;
 export type IListsProperties = PropertiesOf<IListsKommo>;
 export type ICustomersProperties = PropertiesOf<ICustomersKommo>;
 export type IPurchasesProperties = PropertiesOf<IPurchasesKommo>;
+export type IWebhooksProperties = PropertiesOf<IWebhooksKommo>;
 
 export interface IAttachment {
 	fields: {
