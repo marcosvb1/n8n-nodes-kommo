@@ -10,6 +10,8 @@ import * as notes from './notes';
 import * as lists from './lists';
 import * as purchases from './purchases';
 import * as unsorted from './unsorted';
+import * as customers from './customers';
+import * as transactions from './transactions';
 
 function simplifyPayload(payload: any): any {
 	if (Array.isArray(payload)) return payload.map(simplifyPayload);
@@ -37,46 +39,21 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 	let responseData: IDataObject | IDataObject[] = [];
 
 	for (let i = 0; i < items.length; i++) {
-		const resource = this.getNodeParameter<IKommo>('resource', i);
-		let operation = '' as string;
-		try {
-			operation = this.getNodeParameter('operation', i) as string;
-		} catch (e) {
-			// fallback for compatibility with older n8n versions
-			try {
-				const nodeParams = this.getNode().parameters as any;
-				operation = nodeParams?.operation || '';
-			} catch (fallbackError) {
-				// if all fails, provide empty string
-				operation = '';
-			}
-		}
-
-		// validate we have operation
-		if (!operation) {
-			// Set default operation based on resource
-			if (resource === 'purchases') {
-				operation = 'getPurchases';
-			} else if (resource === 'account') {
-				operation = 'getInfo';
-			} else if (resource === 'leads') {
-				operation = 'getLeads';
-			} else if (resource === 'contacts') {
-				operation = 'getContacts';
-			} else if (resource === 'companies') {
-				operation = 'getCompany';
-			} else if (resource === 'notes') {
-				operation = 'getNotes';
-			} else if (resource === 'tasks') {
-				operation = 'getTasks';
-			} else if (resource === 'lists') {
-				operation = 'getLists';
-			} else if (resource === 'unsorted') {
-				operation = 'get';
-			} else {
-				throw new Error(`Missing operation parameter for resource: ${resource}`);
-			}
-		}
+			const resource = this.getNodeParameter<IKommo>('resource', i);
+			// Read operation with resource-specific fallback to avoid runtime crashes when UI fails to provide it
+			let operation: string;
+			if (resource === 'account') operation = this.getNodeParameter('operation', i, 'getInfo') as string;
+			else if (resource === 'contacts') operation = this.getNodeParameter('operation', i, 'getContacts') as string;
+			else if (resource === 'leads') operation = this.getNodeParameter('operation', i, 'getLeads') as string;
+			else if (resource === 'tasks') operation = this.getNodeParameter('operation', i, 'getTasks') as string;
+			else if (resource === 'companies') operation = this.getNodeParameter('operation', i, 'getCompany') as string;
+			else if (resource === 'notes') operation = this.getNodeParameter('operation', i, 'getNotes') as string;
+			else if (resource === 'lists') operation = this.getNodeParameter('operation', i, 'getLists') as string;
+			else if (resource === 'customers') operation = this.getNodeParameter('operation', i, 'getCustomers') as string;
+			else if (resource === 'transactions') operation = this.getNodeParameter('operation', i, 'getTransactions') as string;
+			else if (resource === 'purchases') operation = this.getNodeParameter('operation', i, 'getPurchases') as string;
+			else if (resource === 'unsorted') operation = this.getNodeParameter('operation', i, 'get') as string;
+			else operation = this.getNodeParameter('operation', i) as string;
 
 		const kommo = {
 			resource,
@@ -84,7 +61,7 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 		} as IKommo;
 
 		try {
-			if (kommo.resource === 'account') {
+            if (kommo.resource === 'account') {
 				responseData = await account[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'contacts') {
 				responseData = await contacts[kommo.operation].execute.call(this, i);
@@ -98,6 +75,10 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 				responseData = await notes[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'lists') {
 				responseData = await lists[kommo.operation].execute.call(this, i);
+			} else if (kommo.resource === 'customers') {
+				responseData = await customers[kommo.operation].execute.call(this, i);
+			} else if (kommo.resource === 'transactions') {
+				responseData = await transactions[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'purchases') {
 				responseData = await purchases[kommo.operation].execute.call(this, i);
 			} else if (kommo.resource === 'unsorted') {

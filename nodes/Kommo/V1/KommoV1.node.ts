@@ -17,6 +17,8 @@ import * as notes from './resources/notes';
 import * as lists from './resources/lists';
 import * as purchases from './resources/purchases';
 import * as unsorted from './resources/unsorted';
+import * as customers from './resources/customers';
+import * as transactions from './resources/transactions';
 
 export class KommoV1 implements INodeType {
 	description: INodeTypeDescription;
@@ -92,42 +94,17 @@ export class KommoV1 implements INodeType {
 					type: 'options',
 					noDataExpression: true,
 					options: [
-						{
-							name: 'Account',
-							value: 'account',
-						},
-						{
-							name: 'Company',
-							value: 'companies',
-						},
-						{
-							name: 'Contact',
-							value: 'contacts',
-						},
-						{
-							name: 'Lead',
-							value: 'leads',
-						},
-						{
-							name: 'List',
-							value: 'lists',
-						},
-						{
-							name: 'Note',
-							value: 'notes',
-						},
-						{
-							name: 'Purchase',
-							value: 'purchases',
-						},
-						{
-							name: 'Task',
-							value: 'tasks',
-						},
-						{
-							name: 'Unsorted',
-							value: 'unsorted',
-						},
+						{ name: 'Account', value: 'account' },
+						{ name: 'Company', value: 'companies' },
+						{ name: 'Contact', value: 'contacts' },
+						{ name: 'Customer', value: 'customers' },
+						{ name: 'Lead', value: 'leads' },
+						{ name: 'List', value: 'lists' },
+						{ name: 'Note', value: 'notes' },
+						{ name: 'Purchase', value: 'purchases' },
+						{ name: 'Task', value: 'tasks' },
+						{ name: 'Transaction', value: 'transactions' },
+						{ name: 'Unsorted', value: 'unsorted' },
 					],
 					default: 'account',
 				},
@@ -140,6 +117,8 @@ export class KommoV1 implements INodeType {
 				...lists.descriptions,
 				...purchases.descriptions,
 				...unsorted.descriptions,
+				...customers.descriptions,
+				...transactions.descriptions,
 			],
 		};
 	}

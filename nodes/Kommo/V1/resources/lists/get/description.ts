@@ -13,6 +13,14 @@ const displayOptions: IDisplayOptions | undefined = {
 
 export const description: IListsProperties = [
 	addReturnAll(displayOptions),
+  {
+    displayName: 'Simplify Output',
+    name: 'simplify',
+    type: 'boolean',
+    default: true,
+    description: 'Whether to return only the catalogs array instead of the full response',
+    displayOptions,
+  },
 	addPageDescription({
 		show: {
 			...displayOptions.show,

@@ -39,6 +39,7 @@ export async function execute(
 ): Promise<INodeExecutionData[]> {
 	const body = {} as IDataObject;
 	const qs = {} as IDataObject;
+    const simplify = this.getNodeParameter('simplify', 0, true) as boolean;
 
 	//--------------------------------Add filter--------------------------------------
 
@@ -103,11 +104,19 @@ export async function execute(
 	const requestMethod = 'GET';
 	const endpoint = `contacts`;
 
-	if (returnAll) {
-		const responseData = await apiRequestAllItems.call(this, requestMethod, endpoint, body, qs);
-		return this.helpers.returnJsonArray(responseData);
-	}
+    if (returnAll) {
+        const pages = await apiRequestAllItems.call(this, requestMethod, endpoint, body, qs);
+        if (simplify) {
+            const contacts = pages.flatMap((page: any) => page?._embedded?.contacts ?? []);
+            return this.helpers.returnJsonArray(contacts);
+        }
+        return this.helpers.returnJsonArray(pages);
+    }
 
-	const responseData = await apiRequest.call(this, requestMethod, endpoint, body, qs);
-	return await this.helpers.returnJsonArray(responseData);
+    const responseData = await apiRequest.call(this, requestMethod, endpoint, body, qs);
+    if (simplify) {
+        const contacts = (responseData as any)?._embedded?.contacts ?? [];
+        return this.helpers.returnJsonArray(contacts);
+    }
+    return this.helpers.returnJsonArray(responseData);
 }
