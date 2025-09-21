@@ -1,7 +1,7 @@
 {
   "name": "@marcosvb1/n8n-nodes-kommo",
   "version": "0.3.15",
-  "description": "n8n node for Kommo Api",
+  "description": "n8n node for Kommo API",
   "keywords": [
     "n8n-community-node-package",
     "kommo",
