@@ -174,7 +174,7 @@ export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): 
             };
             if (item.catalog_element_id) {
                 const parsed = parseInt(item.catalog_element_id, 10);
-                if (!Number.isNaN(parsed)) out.catalog_element_id = parsed;
+                if (!Number.isNaN(parsed)) out.product_id = parsed;
             }
             if (item.discount && Number(item.discount) > 0) {
                 out.discount = { type: 'amount', value: Number(item.discount) };
