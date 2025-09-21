@@ -3,11 +3,11 @@ import { addCustomFieldDescription } from '../_components/CustomFieldsDescriptio
 
 // Invoice item interfaces
 export interface IInvoiceItem {
-	catalog_element_id: number;
-	quantity: number;
-	unit_price: number;
-	discount?: number;
-	unit_type?: string;
+    quantity: number;
+    unit_price: number;
+    unit_type?: string;
+    // discount will be mapped to { type: 'amount' | 'percent', value: number }
+    discount?: number;
 }
 
 export interface IInvoiceItemForm {
@@ -163,12 +163,18 @@ export const purchaseModelDescription: INodeProperties[] = [
 ];
 
 // Helper function to convert invoice items form to API format
-export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): IInvoiceItem[] => {
-	return invoiceItemsForm.invoice_item?.map((item) => ({
-		catalog_element_id: parseInt(item.catalog_element_id, 10),
-		quantity: item.quantity,
-		unit_price: item.unit_price,
-		discount: item.discount || 0,
-		unit_type: item.unit_type || 'pcs',
-	})) || [];
+export const makeInvoiceItemsReqObject = (invoiceItemsForm: IInvoiceItemsForm): Array<Record<string, any>> => {
+    return (
+        invoiceItemsForm.invoice_item?.map((item) => {
+            const out: Record<string, any> = {
+                quantity: item.quantity,
+                unit_price: item.unit_price,
+                unit_type: item.unit_type || 'pcs',
+            };
+            if (item.discount && Number(item.discount) > 0) {
+                out.discount = { type: 'amount', value: Number(item.discount) };
+            }
+            return out;
+        }) || []
+    );
 };
