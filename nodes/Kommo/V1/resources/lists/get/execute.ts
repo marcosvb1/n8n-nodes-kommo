@@ -7,6 +7,7 @@ export async function execute(
 ): Promise<INodeExecutionData[]> {
 	const body = {} as IDataObject;
 	const qs = {} as IDataObject;
+    const simplify = this.getNodeParameter('simplify', 0, true) as boolean;
 
 	//---------------------------------------------------------------------------------
 
@@ -25,17 +26,25 @@ export async function execute(
 	const requestMethod = 'GET';
 	const endpoint = `catalogs`;
 
-	if (returnAll) {
-		const responseData = await await apiRequestAllItems.call(
-			this,
-			requestMethod,
-			endpoint,
-			body,
-			qs,
-		);
-		return this.helpers.returnJsonArray(responseData);
-	}
+    if (returnAll) {
+        const pages = await await apiRequestAllItems.call(
+            this,
+            requestMethod,
+            endpoint,
+            body,
+            qs,
+        );
+        if (simplify) {
+            const catalogs = pages.flatMap((page: any) => page?._embedded?.catalogs ?? []);
+            return this.helpers.returnJsonArray(catalogs);
+        }
+        return this.helpers.returnJsonArray(pages);
+    }
 
-	const responseData = await apiRequest.call(this, requestMethod, endpoint, body, qs);
-	return this.helpers.returnJsonArray(responseData);
+    const responseData = await apiRequest.call(this, requestMethod, endpoint, body, qs);
+    if (simplify) {
+        const catalogs = (responseData as any)?._embedded?.catalogs ?? [];
+        return this.helpers.returnJsonArray(catalogs);
+    }
+    return this.helpers.returnJsonArray(responseData);
 }

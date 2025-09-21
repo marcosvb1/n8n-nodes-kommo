@@ -27,6 +27,14 @@ export const description: IListsProperties = [
 		displayOptions,
 	},
 	addReturnAll(displayOptions),
+  {
+    displayName: 'Simplify Output',
+    name: 'simplify',
+    type: 'boolean',
+    default: true,
+    description: 'Whether to return only the elements array instead of the full response',
+    displayOptions,
+  },
 	addFilterDescription(displayOptions, [
 		{
 			displayName: 'Query',
