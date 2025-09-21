@@ -54,7 +54,12 @@ export const addCustomFieldDescription = (loadOptionsMethod: string): INodePrope
 };
 
 export const makeCustomFieldReqObject = (customFieldsValues: ICustomFieldValuesForm) => {
-	return customFieldsValues.custom_field?.reduce(
+    const list = customFieldsValues?.custom_field;
+    if (!Array.isArray(list) || list.length === 0) return [] as Array<{
+        field_id: number;
+        values: Array<{ value?: number | boolean | string; enum_id?: number; enum_code?: string }>;
+    }>;
+    return list.reduce(
 		(
 			acc: Array<{
 				field_id: number;

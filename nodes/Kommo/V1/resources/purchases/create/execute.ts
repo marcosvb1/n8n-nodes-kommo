@@ -58,7 +58,7 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
                 purchaseData.custom_fields_values = purchaseData.custom_fields_values || [];
 
                 purchaseData.custom_fields_values.push({
-                    field_code: 'invoice_items',
+                    field_code: 'items',
                     values: [{ value: invoiceItems }]
                 });
             }

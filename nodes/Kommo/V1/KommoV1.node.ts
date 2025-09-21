@@ -36,8 +36,8 @@ export class KommoV1 implements INodeType {
 			defaults: {
 				name: 'Kommo API Node',
 			},
-			inputs: ['main'],
-			outputs: ['main'],
+			inputs: ['main'] as any,
+			outputs: ['main'] as any,
 			credentials: [
 				{
 					name: 'kommoOAuth2Api',
