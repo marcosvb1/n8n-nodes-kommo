@@ -33,7 +33,11 @@ export async function execute(this: IExecuteFunctions, index: number): Promise<a
 
     // Locate catalog custom field of type "items" to attach invoice items
     const cfResponse = await apiRequest.call(this, 'GET', `catalogs/${catalog_id}/custom_fields`, {});
-    const itemsField = cfResponse?._embedded?.custom_fields?.find((f: any) => f?.type === 'items');
+    const customFields = cfResponse?._embedded?.custom_fields || [];
+    // Prefer by code 'ITEMS' per API; fallback by string type 'items' or numeric type if provided by backend
+    const itemsField = customFields.find((f: any) => f?.code === 'ITEMS')
+        || customFields.find((f: any) => f?.type === 'items')
+        || customFields.find((f: any) => String(f?.type).toLowerCase() === 'items');
     if (!itemsField?.id) {
         throw new NodeOperationError(this.getNode(), 'Catalog does not have an items-type custom field. Please add it in Kommo.', {
             description: 'Expected a custom field with type = items in the selected invoice catalog',
